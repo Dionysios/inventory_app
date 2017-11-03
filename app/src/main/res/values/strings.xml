@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Inventory App</string>
+    <string name="position_name_hint">Position name</string>
+    <string name="quantity_hint">How many items on the item</string>
+    <string name="add_button_text">ADD</string>
+    <string name="default_guest_name">[Guest name]</string>
+    <string name="default_party_size">\?</string>
+</resources>
