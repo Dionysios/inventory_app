@@ -1,9 +1,13 @@
 package com.example.dionpapas.inventoryapp;
 
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
 import android.content.ContentValues;
+import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,19 +16,17 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.support.design.widget.FloatingActionButton;
 
 import com.example.dionpapas.inventoryapp.data.InventoryAppContract;
 import com.example.dionpapas.inventoryapp.data.InventoryDBHelper;
-import com.example.dionpapas.inventoryapp.data.TestUtils;
 
 public class MainActivity extends AppCompatActivity {
 
     private static String LOG_TAG = "MainActivty";
     private SQLiteDatabase mDb;
     private PositionsListAdapter mAdapter;
-    private EditText mPositionName;
-    private EditText mItemName;
-    private EditText mQuantity;
+    private static final int TASK_LOADER_ID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,18 +37,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Set local attributes to corresponding views
         waitlistRecyclerView = (RecyclerView) this.findViewById(R.id.all_guests_list_view);
-        mPositionName = (EditText) this.findViewById(R.id.position_edit_text);
-        mItemName = (EditText) this.findViewById(R.id.item_edit_text);
-        mQuantity = (EditText) this.findViewById(R.id.quantity_edit_text);
-        // Set layout for the RecyclerView, because it's a list we are using the linear layout
+
         waitlistRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         InventoryDBHelper dbHelper = new InventoryDBHelper(this);
 
         mDb = dbHelper.getWritableDatabase();
-
-        //Fill the database with fake data
-        //TestUtils.insertFakeData(mDb);
 
         Cursor cursor = getAllPositions();
         // Create an adapter for that cursor to display the data
@@ -54,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
         // Link the adapter to the RecyclerView
         waitlistRecyclerView.setAdapter(mAdapter);
 
-        // COMPLETED (3) Create a new ItemTouchHelper with a SimpleCallback that handles both LEFT and RIGHT swipe directions
-        // Create an item touch helper to handle swiping items off the list
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             // COMPLETED (4) Override onMove and simply return false inside
@@ -82,33 +76,29 @@ public class MainActivity extends AppCompatActivity {
             //COMPLETED (11) attach the ItemTouchHelper to the waitlistRecyclerView
         }).attachToRecyclerView(waitlistRecyclerView);
 
+        FloatingActionButton fabButton = (FloatingActionButton) findViewById(R.id.fab);
+
+        fabButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Create a new intent to start an AddTaskActivity
+                Intent addTaskIntent = new Intent(MainActivity.this, AddRegistrationActivity.class);
+                startActivity(addTaskIntent);
+            }
+        });
+
     }
 
-    public void addToWaitlist(View view) {
-        if (mPositionName.getText().length() == 0 ||
-                mPositionName.getText().length() == 0) {
-            return;
-        }
-
-        int quantity_final = 1;
-
-        try {
-            quantity_final = Integer.parseInt(mQuantity.getText().toString());
-        } catch (NumberFormatException ex) {
-            // COMPLETED (12) Make sure you surround the Integer.parseInt with a try catch and log any exception
-            Log.e(LOG_TAG, "Failed to parse party size text to number: " + ex.getMessage());
-        }
-
-        addNewItem(mPositionName.getText().toString(),mItemName.getText().toString(), quantity_final);
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // re-queries for all tasks
+        Log.d(LOG_TAG,"Reaching here");
         mAdapter.swapCursor(getAllPositions());
-
-        // COMPLETED (20) To make the UI look nice, call .getText().clear() on both EditTexts, also call clearFocus() on mNewPartySizeEditText
-        //clear UI text fields
-        mPositionName.clearFocus();
-        mItemName.getText().clear();
-        mQuantity.getText().clear();
+        //getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
     }
+
+
     private Cursor getAllPositions() {
         // COMPLETED (6) Inside, call query on mDb passing in the table name and projection String [] order by COLUMN_TIMESTAMP
         return mDb.query(
@@ -120,17 +110,6 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 InventoryAppContract.PositionEntry.COLUMN_TIMESTAMP
         );
-    }
-
-    private long addNewItem(String position,String item, int quantity) {
-
-        ContentValues cv = new ContentValues();
-
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, position);
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_ITEM, item);
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_QUANTITY, quantity);
-
-        return mDb.insert(InventoryAppContract.PositionEntry.TABLE_NAME_POSITIONS, null, cv);
     }
 
     private boolean removePosition(long id) {

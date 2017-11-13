@@ -1,60 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<!--
+    This layout defines the main activity screen and displays a list of tasks (if they exist),
+    and a floating action button that launches another activity.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/activity_horizontal_margin"
-    tools:context="com.example.android.waitlist.MainActivity">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/position_edit_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-
-            android:hint="@string/position_name_hint"
-            android:inputType="textPersonName|textCapWords"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
-
-        <EditText
-            android:id="@+id/item_edit_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:inputType="textPersonName|textCapWords"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
-        <EditText
-            android:id="@+id/quantity_edit_text"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/quantity_hint"
-            android:gravity="center"
-            android:inputType="number"
-            android:maxLength="2"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
-
-    </LinearLayout>
-
-
-    <Button
-        android:id="@+id/add_to_waitlist_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorPrimary"
-        android:onClick="addToWaitlist"
-        android:text="@string/add_button_text"
-        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Inverse" />
-
+    <!-- RecyclerView that is responsible for holding a list of task data -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/all_guests_list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:paddingBottom="8dp"/>
 
-</LinearLayout>
+    <!-- Floating action button that launches AddTaskActivity when clicked -->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:tint="@android:color/white"/>
+
+</FrameLayout>
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--android:orientation="vertical"-->
+    <!--android:padding="@dimen/activity_horizontal_margin"-->
+    <!--tools:context="com.example.android.waitlist.MainActivity">-->
+
+    <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content">&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<EditText&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/position_edit_text"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
+
+            <!--&lt;!&ndash;android:hint="@string/position_name_hint"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:inputType="textPersonName|textCapWords"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:textAppearance="@style/TextAppearance.AppCompat.Headline" />&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<EditText&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/item_edit_text"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:inputType="textPersonName|textCapWords"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:textAppearance="@style/TextAppearance.AppCompat.Headline" />&ndash;&gt;-->
+        <!--&lt;!&ndash;<EditText&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/quantity_edit_text"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="40dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:contentDescription="@string/quantity_hint"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:inputType="number"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:maxLength="2"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:textAppearance="@style/TextAppearance.AppCompat.Headline" />&ndash;&gt;-->
+
+    <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;<Button&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/add_to_waitlist_button"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginBottom="8dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginTop="8dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:background="@color/colorPrimary"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:onClick="addToWaitlist"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:text="@string/add_button_text"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Inverse" />&ndash;&gt;-->
+
+    <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/all_guests_list_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
+
+    <!--&lt;!&ndash; Floating action button that launches AddTaskActivity when clicked &ndash;&gt;-->
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/fab"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="bottom|end"-->
+        <!--android:layout_margin="16dp"-->
+        <!--app:srcCompat="@android:drawable/ic_input_add"-->
+        <!--android:tint="@android:color/white"/>-->
+
+<!--</LinearLayout>-->

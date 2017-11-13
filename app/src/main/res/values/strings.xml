@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">Inventory App</string>
     <string name="position_name_hint">Position name</string>
+    <string name="item_hint">Item</string>
+    <string name="stock_hint">Stock</string>
+    <string name="wms_hint">WMS</string>
+    <string name="difference_hint">Difference</string>
     <string name="quantity_hint">How many items on the item</string>
-    <string name="add_button_text">ADD</string>
+    <string name="add_button_text">Save</string>
     <string name="default_guest_name">[Guest name]</string>
     <string name="default_party_size">\?</string>
 </resources>
