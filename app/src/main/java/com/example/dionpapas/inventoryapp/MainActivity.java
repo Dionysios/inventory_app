@@ -1,13 +1,8 @@
 package com.example.dionpapas.inventoryapp;
 
-import android.app.LoaderManager;
-import android.content.AsyncTaskLoader;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.support.design.widget.FloatingActionButton;
 
 import com.example.dionpapas.inventoryapp.data.InventoryAppContract;
@@ -35,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView waitlistRecyclerView;
 
-        // Set local attributes to corresponding views
         waitlistRecyclerView = (RecyclerView) this.findViewById(R.id.all_guests_list_view);
 
         waitlistRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -98,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     private Cursor getAllPositions() {
         // COMPLETED (6) Inside, call query on mDb passing in the table name and projection String [] order by COLUMN_TIMESTAMP
         return mDb.query(
-                InventoryAppContract.PositionEntry.TABLE_NAME_POSITIONS,
+                InventoryAppContract.PositionEntry.TABLE_NAME_REGISTRATIONS,
                 null,
                 null,
                 null,
@@ -110,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean removePosition(long id) {
         // COMPLETED (2) Inside, call mDb.delete to pass in the TABLE_NAME and the condition that WaitlistEntry._ID equals id
-        return mDb.delete(InventoryAppContract.PositionEntry.TABLE_NAME_POSITIONS, InventoryAppContract.PositionEntry._ID + "=" + id, null) > 0;
+        return mDb.delete(InventoryAppContract.PositionEntry.TABLE_NAME_REGISTRATIONS, InventoryAppContract.PositionEntry._ID + "=" + id, null) > 0;
     }
 
 }

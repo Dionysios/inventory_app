@@ -22,11 +22,11 @@ public class InventoryDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         // Create a table to hold waitlist data
-        final String SQL_CREATE_POSITIONS_TABLE = "CREATE TABLE " + PositionEntry.TABLE_NAME_POSITIONS + " (" +
+        final String SQL_CREATE_POSITIONS_TABLE = "CREATE TABLE " + PositionEntry.TABLE_NAME_REGISTRATIONS + " (" +
                 PositionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 PositionEntry.COLUMN_POSITION + " TEXT NOT NULL, " +
                 PositionEntry.COLUMN_ITEM + " TEXT NOT NULL, " +
-                PositionEntry.COLUMN_QUANTITY + " INTEGER DEFAULT 0, " +
+                PositionEntry.COLUMN_STOCK + " INTEGER DEFAULT 0, " +
                 PositionEntry.COLUMN_WMS + " INTEGER DEFAULT 0," +
                 PositionEntry.COLUMN_DIFFERENCE + " INTEGER DEFAULT 0," +
                 PositionEntry.COLUMN_TIMESTAMP + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP" + "); ";
@@ -36,7 +36,7 @@ public class InventoryDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PositionEntry.TABLE_NAME_POSITIONS);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + PositionEntry.TABLE_NAME_REGISTRATIONS);
         onCreate(sqLiteDatabase);
     }
 }

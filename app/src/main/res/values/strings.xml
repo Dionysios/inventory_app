@@ -5,6 +5,7 @@
     <string name="stock_hint">Stock</string>
     <string name="wms_hint">WMS</string>
     <string name="difference_hint">Difference</string>
+    <string name="date_hint">Date</string>
     <string name="quantity_hint">How many items on the item</string>
     <string name="add_button_text">Save</string>
     <string name="default_guest_name">[Guest name]</string>

@@ -22,7 +22,7 @@ public class TestUtils {
         ContentValues cv = new ContentValues();
         cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, "05361");
         cv.put(InventoryAppContract.PositionEntry.COLUMN_ITEM, "12358");
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_QUANTITY, 25);
+        cv.put(InventoryAppContract.PositionEntry.COLUMN_STOCK, 25);
         cv.put(InventoryAppContract.PositionEntry.COLUMN_WMS, 16);
         cv.put(InventoryAppContract.PositionEntry.COLUMN_DIFFERENCE, 9);
 
@@ -31,7 +31,7 @@ public class TestUtils {
         cv = new ContentValues();
         cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, "05361");
         cv.put(InventoryAppContract.PositionEntry.COLUMN_ITEM, "5354534534");
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_QUANTITY, 20);
+        cv.put(InventoryAppContract.PositionEntry.COLUMN_STOCK, 20);
         cv.put(InventoryAppContract.PositionEntry.COLUMN_WMS, 16);
         cv.put(InventoryAppContract.PositionEntry.COLUMN_DIFFERENCE, 4);
         list.add(cv);
@@ -56,10 +56,10 @@ public class TestUtils {
         {
             db.beginTransaction();
             //clear the table first
-            db.delete (InventoryAppContract.PositionEntry.TABLE_NAME_POSITIONS,null,null);
+            db.delete (InventoryAppContract.PositionEntry.TABLE_NAME_REGISTRATIONS,null,null);
             //go through the list and add one by one
             for(ContentValues c:list){
-                db.insert(InventoryAppContract.PositionEntry.TABLE_NAME_POSITIONS, null, c);
+                db.insert(InventoryAppContract.PositionEntry.TABLE_NAME_REGISTRATIONS, null, c);
             }
             db.setTransactionSuccessful();
         }

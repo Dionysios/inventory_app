@@ -6,7 +6,7 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/position_name"
+        android:id="@+id/registration_id"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center"
@@ -18,22 +18,43 @@
         android:text="@string/default_party_size"/>
 
     <TextView
-        android:id="@+id/item_name"
+        android:id="@+id/position_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_weight="1"
         android:fontFamily="sans-serif"
         android:textSize="16sp"
-        android:text="@string/default_guest_name"/>
+        android:text="@string/position_name_hint"/>
 
     <TextView
-        android:id="@+id/quantity_tv"
+        android:id="@+id/item_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="16dp"
         android:layout_weight="1"
         android:fontFamily="sans-serif"
         android:textSize="16sp"
-        android:text="@string/default_guest_name"/>
+        android:text="@string/item_hint"/>
+
+    <TextView
+        android:id="@+id/date_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif"
+        android:textSize="16sp"
+        android:text="@string/date_hint"/>
+
+    <TextView
+        android:id="@+id/difference_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif"
+        android:textSize="16sp"
+        android:text="@string/difference_hint"/>
+
 </LinearLayout>
