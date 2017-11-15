@@ -32,12 +32,12 @@ public class AddRegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
 
-        mPositionName = (EditText) this.findViewById(R.id.editTextTaskDescription);
-        mItemName = (EditText) this.findViewById(R.id.item_edit_text);
-        mQuantity = (EditText) this.findViewById(R.id.quantity_edit_text);
-        mStock = (EditText) this.findViewById(R.id.stock_edit_text);
-        mWMS = (EditText) this.findViewById(R.id.WMS_edit_text);
-        mDifference = (EditText) this.findViewById(R.id.difference_edit_text);
+        mPositionName = (EditText) this.findViewById(R.id.input_position);
+        mItemName = (EditText) this.findViewById(R.id.input_item);
+        //mQuantity = (EditText) this.findViewById(R.id.quantity_edit_text);
+        mStock = (EditText) this.findViewById(R.id.input_stock);
+        mWMS = (EditText) this.findViewById(R.id.input_wms);
+        mDifference = (EditText) this.findViewById(R.id.input_difference);
         InventoryDBHelper dbHelper = new InventoryDBHelper(this);
         mDb = dbHelper.getWritableDatabase();
 

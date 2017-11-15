@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Inventory App</string>
-    <string name="position_name_hint">Position name</string>
+    <string name="position_name_hint">Position</string>
     <string name="item_hint">Item</string>
     <string name="stock_hint">Stock</string>
     <string name="wms_hint">WMS</string>
