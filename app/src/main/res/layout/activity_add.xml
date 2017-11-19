@@ -17,26 +17,23 @@
 
         <ImageButton
             android:id="@+id/imageButton"
-            android:layout_width="110dp"
-            android:layout_height="60dp"
-            android:layout_alignBottom="@+id/textPositionLayout"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="8dp"
-            app:srcCompat="@drawable/barcode"/>
+            android:layout_alignTop="@+id/textPositionLayout"
+            app:srcCompat="@drawable/barcode" />
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/textPositionLayout"
             android:layout_width="239dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:id="@+id/textPositionLayout">
+            android:layout_marginTop="8dp">
 
             <EditText
                 android:id="@+id/input_position"
-                android:layout_width="239dp"
+                android:layout_width="222dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/position_name_hint" />
         </android.support.design.widget.TextInputLayout>
@@ -47,15 +44,12 @@
 
         <ImageButton
             android:id="@+id/imageButton2"
-            android:layout_width="110dp"
-            android:layout_height="60dp"
-            android:layout_alignBottom="@+id/textInputLayout"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="8dp"
-            app:srcCompat="@drawable/barcode"/>
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/barcode" />
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="239dp"
@@ -66,7 +60,7 @@
 
             <EditText
                 android:id="@+id/input_item"
-                android:layout_width="239dp"
+                android:layout_width="221dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/item_hint"
                 android:inputType="textEmailAddress" />

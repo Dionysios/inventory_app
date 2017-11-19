@@ -1,18 +1,28 @@
 package com.example.dionpapas.inventoryapp;
 
+import android.Manifest;
 import android.content.ContentValues;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.dionpapas.inventoryapp.data.InventoryAppContract;
 import com.example.dionpapas.inventoryapp.data.InventoryDBHelper;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 /**
  * Created by dionpa on 2017-11-13.
@@ -29,6 +39,8 @@ public class AddRegistrationActivity extends AppCompatActivity {
     int stock_final = 0;
     int mWMS_final = 0;
     int difference_final = 0;
+    private static final int CAMERA_PERMISSION = 1;
+    private Class<?> mClss;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +58,23 @@ public class AddRegistrationActivity extends AppCompatActivity {
 
         InventoryDBHelper dbHelper = new InventoryDBHelper(this);
         mDb = dbHelper.getWritableDatabase();
+
+
+        ImageButton btn = (ImageButton) findViewById(R.id.imageButton);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchActivity(ScanningActivity.class, "position");
+            }
+        });
+
+        ImageButton btn2 = (ImageButton) findViewById(R.id.imageButton2);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchActivity(ScanningActivity.class, "item");
+            }
+        });
 
         mStock.addTextChangedListener(new TextWatcher() {
 
@@ -83,6 +112,57 @@ public class AddRegistrationActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
+    }
+
+    public void launchActivity(Class<?> clss , String field) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            mClss = clss;
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
+        } else {
+            Intent intent = new Intent(this, clss);
+            intent.putExtra("field",field);
+            startActivityForResult(intent, 0);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // Check which request we're responding to
+        Log.d(LOG_TAG, "OnActivity Resut");
+        if (requestCode == CommonStatusCodes.SUCCESS ) {
+            // Make sure the request was successful
+            String field = data.getStringExtra("field");
+            Barcode barcode = data.getParcelableExtra("barcode");
+            if (field.equals("position"))
+                mPositionName.setText(barcode.displayValue);
+            else
+                mItemName.setText(barcode.displayValue);
+            getIntent().removeExtra("field");
+//            if (resultCode == RESULT_OK) {
+//                // The user picked a contact.
+//                // The Intent's data Uri identifies which contact was selected.
+//
+//                // Do something with the contact here (bigger example below)
+//            }
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,  String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_PERMISSION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if(mClss != null) {
+                        Intent intent = new Intent(this, mClss);
+                        startActivity(intent);
+                    }
+                } else {
+                    Toast.makeText(this, "Please grant camera permission to use the QR Scanner", Toast.LENGTH_SHORT).show();
+                }
+                return;
+        }
     }
 
     public void addToDB(View view) {

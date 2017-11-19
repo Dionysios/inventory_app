@@ -46,7 +46,7 @@ public class PositionsListAdapter extends RecyclerView.Adapter<PositionsListAdap
         int difference = mCursor.getInt(mCursor.getColumnIndex(InventoryAppContract.PositionEntry.COLUMN_DIFFERENCE));
         //Date date = new Date(mCursor.getLong(6));
         String date = mCursor.getString(mCursor.getColumnIndex("timestamp"));
-        
+
         holder.idTextView.setText(String.valueOf(id));
         holder.positionTextView.setText(position_name);
         holder.itemTextView.setText(item_name);
