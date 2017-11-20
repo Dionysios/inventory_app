@@ -21,7 +21,7 @@ public class PositionsListAdapter extends RecyclerView.Adapter<PositionsListAdap
 
     private Context mContext;
     private Cursor mCursor;
-    
+
     public PositionsListAdapter(Context mContext, Cursor mCursor) {
         this.mContext = mContext;
         this.mCursor = mCursor;
