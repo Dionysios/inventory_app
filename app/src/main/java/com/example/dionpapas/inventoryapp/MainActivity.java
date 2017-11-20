@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.support.design.widget.FloatingActionButton;
 
@@ -20,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private static String LOG_TAG = "MainActivty";
     private SQLiteDatabase mDb;
     private PositionsListAdapter mAdapter;
-    private static final int TASK_LOADER_ID = 0;
+   // PositionsListAdapter.ListItemClickListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private Cursor getAllPositions() {
-        // COMPLETED (6) Inside, call query on mDb passing in the table name and projection String [] order by COLUMN_TIMESTAMP
         return mDb.query(
                 InventoryAppContract.PositionEntry.TABLE_NAME_REGISTRATIONS,
                 null,
@@ -103,8 +103,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean removePosition(long id) {
-        // COMPLETED (2) Inside, call mDb.delete to pass in the TABLE_NAME and the condition that WaitlistEntry._ID equals id
         return mDb.delete(InventoryAppContract.PositionEntry.TABLE_NAME_REGISTRATIONS, InventoryAppContract.PositionEntry._ID + "=" + id, null) > 0;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
 
 }

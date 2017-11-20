@@ -1,17 +1,17 @@
 package com.example.dionpapas.inventoryapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dionpapas.inventoryapp.data.InventoryAppContract;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by dionpa on 2017-11-03.
@@ -21,7 +21,7 @@ public class PositionsListAdapter extends RecyclerView.Adapter<PositionsListAdap
 
     private Context mContext;
     private Cursor mCursor;
-
+    
     public PositionsListAdapter(Context mContext, Cursor mCursor) {
         this.mContext = mContext;
         this.mCursor = mCursor;
@@ -58,12 +58,16 @@ public class PositionsListAdapter extends RecyclerView.Adapter<PositionsListAdap
         holder.itemView.setTag(id);
     }
 
+    public interface ListItemClickListener {
+        void onListItemClick(int clickedItemIndex);
+    }
+
     @Override
     public int getItemCount() {
         return mCursor.getCount();
     }
 
-    public class PositionsViewHolder extends RecyclerView.ViewHolder{
+    public class PositionsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView idTextView;
 
@@ -82,7 +86,20 @@ public class PositionsListAdapter extends RecyclerView.Adapter<PositionsListAdap
             itemTextView = (TextView) itemView.findViewById(R.id.item_tv);
             differenceTextview = (TextView) itemView.findViewById(R.id.difference_tv);
             dateTextView = (TextView) itemView.findViewById(R.id.date_tv);
+            itemView.setOnClickListener(this);
+        }
 
+        @Override
+        public void onClick(View v) {
+            int myNum = -1;
+            try {
+                myNum = Integer.parseInt(v.getTag().toString());
+                Intent addTaskIntent = new Intent(mContext, AddRegistrationActivity.class);
+                mContext.startActivity(addTaskIntent);
+            } catch(NumberFormatException nfe) {
+                myNum = -1;
+            }
+            Toast.makeText(v.getContext(),"Clicked " + myNum,Toast.LENGTH_SHORT).show();
         }
     }
 

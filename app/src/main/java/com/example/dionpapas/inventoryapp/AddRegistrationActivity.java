@@ -20,9 +20,7 @@ import android.widget.Toast;
 import com.example.dionpapas.inventoryapp.data.InventoryAppContract;
 import com.example.dionpapas.inventoryapp.data.InventoryDBHelper;
 import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.vision.Frame;
 import com.google.android.gms.vision.barcode.Barcode;
-import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 /**
  * Created by dionpa on 2017-11-13.

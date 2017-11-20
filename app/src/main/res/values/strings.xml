@@ -8,6 +8,7 @@
     <string name="date_hint">Date</string>
     <string name="quantity_hint">How many items on the item</string>
     <string name="add_button_text">Save</string>
+    <string name="action_menu">Menu</string>
     <string name="default_guest_name">[Guest name]</string>
     <string name="default_party_size">\?</string>
 </resources>
