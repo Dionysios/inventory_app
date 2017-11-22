@@ -3,6 +3,7 @@ package com.example.dionpapas.inventoryapp;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.design.widget.TabLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -91,15 +92,18 @@ public class PositionsListAdapter extends RecyclerView.Adapter<PositionsListAdap
 
         @Override
         public void onClick(View v) {
-            int myNum = -1;
+            int idToUpdate = -1;
             try {
-                myNum = Integer.parseInt(v.getTag().toString());
-                Intent addTaskIntent = new Intent(mContext, AddRegistrationActivity.class);
-                mContext.startActivity(addTaskIntent);
+                idToUpdate = Integer.parseInt(v.getTag().toString());
+                Intent updateTaskIntent = new Intent(mContext, AddRegistrationActivity.class);
+                updateTaskIntent.putExtra("parameterUpdate", true);
+                updateTaskIntent.putExtra("registrationId", idToUpdate);
+                Log.d("test", "creating the itent"  + updateTaskIntent.toString());
+                mContext.startActivity(updateTaskIntent);
             } catch(NumberFormatException nfe) {
-                myNum = -1;
+                idToUpdate = -1;
             }
-            Toast.makeText(v.getContext(),"Clicked " + myNum,Toast.LENGTH_SHORT).show();
+            Toast.makeText(v.getContext(),"Clicked " + idToUpdate,Toast.LENGTH_SHORT).show();
         }
     }
 

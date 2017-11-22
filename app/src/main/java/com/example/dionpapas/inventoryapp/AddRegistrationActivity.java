@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -39,24 +40,32 @@ public class AddRegistrationActivity extends AppCompatActivity {
     int difference_final = 0;
     private static final int CAMERA_PERMISSION = 1;
     private Class<?> mClss;
+    private boolean isparameterUpdate = false;
+    private int mid4update;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+        //Get from here the activity was called
+        Intent incomingIntent = getIntent();
+        if (incomingIntent.hasExtra("parameterUpdate") ){
+            isparameterUpdate  =  incomingIntent.getBooleanExtra("parameterUpdate", false);
+            mid4update = incomingIntent.getIntExtra("registrationId", 0);
+        }
+        Log.d(LOG_TAG, "This is called with : " + isparameterUpdate);
 
         mPositionName = (EditText) this.findViewById(R.id.input_position);
         mItemName = (EditText) this.findViewById(R.id.input_item);
         mStock = (EditText) this.findViewById(R.id.input_stock);
         mWMS = (EditText) this.findViewById(R.id.input_wms);
         mDifference = (EditText) this.findViewById(R.id.input_difference);
-        mStock.setText(String.valueOf(stock_final));
-        mWMS.setText(String.valueOf(mWMS_final));
-        mDifference.setText(String.valueOf(difference_final));
+        //mStock.setText(String.valueOf(stock_final));
+        //mWMS.setText(String.valueOf(mWMS_final));
+        //mDifference.setText(String.valueOf(difference_final));
 
         InventoryDBHelper dbHelper = new InventoryDBHelper(this);
         mDb = dbHelper.getWritableDatabase();
-
 
         ImageButton btn = (ImageButton) findViewById(R.id.imageButton);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -110,6 +119,20 @@ public class AddRegistrationActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
 
+        //if it is update append values
+        if(isparameterUpdate == true){
+            String id = String.valueOf(mid4update);
+            Cursor mCursor = getRegistration(id);
+            if (mCursor.moveToFirst()){
+                mPositionName.setText(mCursor.getString(mCursor.getColumnIndex(InventoryAppContract.PositionEntry.COLUMN_POSITION)));
+                mItemName.setText(mCursor.getString(mCursor.getColumnIndex(InventoryAppContract.PositionEntry.COLUMN_ITEM)));
+                mStock.setText(mCursor.getString(mCursor.getColumnIndex(InventoryAppContract.PositionEntry.COLUMN_STOCK)));
+                mWMS.setText(mCursor.getString(mCursor.getColumnIndex(InventoryAppContract.PositionEntry.COLUMN_WMS)));
+                mDifference.setText(mCursor.getString(mCursor.getColumnIndex(InventoryAppContract.PositionEntry.COLUMN_DIFFERENCE)));
+            }
+            mCursor.close();
+        }
+
     }
 
     public void launchActivity(Class<?> clss , String field) {
@@ -127,7 +150,6 @@ public class AddRegistrationActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         // Check which request we're responding to
         Log.d(LOG_TAG, "OnActivity Resut");
         if (requestCode == CommonStatusCodes.SUCCESS ) {
@@ -139,12 +161,6 @@ public class AddRegistrationActivity extends AppCompatActivity {
             else
                 mItemName.setText(barcode.displayValue);
             getIntent().removeExtra("field");
-//            if (resultCode == RESULT_OK) {
-//                // The user picked a contact.
-//                // The Intent's data Uri identifies which contact was selected.
-//
-//                // Do something with the contact here (bigger example below)
-//            }
         }
     }
     @Override
@@ -163,34 +179,52 @@ public class AddRegistrationActivity extends AppCompatActivity {
         }
     }
 
-    public void addToDB(View view) {
+    public void sendToDB(View view) {
+        //Mandatory fields
         if (mPositionName.getText().length() == 0 ||
                 mPositionName.getText().length() == 0) {
             return;
         }
-//        try {
-//            stock_final = Integer.parseInt(mStock.getText().toString());
-//            mWMS_final = Integer.parseInt(mWMS.getText().toString());
-//            difference_final = Integer.parseInt(mDifference.getText().toString());
-//        } catch (NumberFormatException ex) {
-//            Log.d(LOG_TAG, "Failed to parse party size text to number: " + ex.getMessage());
-//        }
 
-        long reply = addNewItem(mPositionName.getText().toString(),mItemName.getText().toString(), stock_final, mWMS_final, difference_final);
-        Log.d(LOG_TAG, "Item has been created" + reply);
-        if(reply != -1) {
-            Toast.makeText(getBaseContext(), "Registration has been created", Toast.LENGTH_LONG).show();
-        }else {
-            Toast.makeText(getBaseContext(), "Registration can not been created", Toast.LENGTH_LONG).show();
+        if (isparameterUpdate == true){
+            long reply = updateRegistration( String.valueOf(mid4update), mPositionName.getText().toString(),mItemName.getText().toString(), stock_final, mWMS_final, difference_final);
+            if (reply != -1) {
+                Toast.makeText(getBaseContext(), "Registration has been updated", Toast.LENGTH_LONG).show();
+                isparameterUpdate = false;
+            } else {
+                Toast.makeText(getBaseContext(), "Registration can not be updated", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            long reply = addNewRegistration(mPositionName.getText().toString(),mItemName.getText().toString(), stock_final, mWMS_final, difference_final);
+            if (reply != -1) {
+                Toast.makeText(getBaseContext(), "Registration has been created", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getBaseContext(), "Registration can not been created", Toast.LENGTH_LONG).show();
+            }
         }
-        mPositionName.clearFocus();
+        clearValues();
+    }
+
+    public void clearValues(){
+        mPositionName.getText().clear();
         mItemName.getText().clear();
         mStock.getText().clear();
         mWMS.getText().clear();
         mDifference.getText().clear();
     }
 
-    private long addNewItem(String position,String item, int stock, int wms, int difference ) {
+    private long updateRegistration(String id,String position,String item, int stock, int wms, int difference ) {
+        ContentValues cv = new ContentValues();
+        cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, position);
+        cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, position);
+        cv.put(InventoryAppContract.PositionEntry.COLUMN_ITEM, item);
+        cv.put(InventoryAppContract.PositionEntry.COLUMN_STOCK, stock);
+        cv.put(InventoryAppContract.PositionEntry.COLUMN_WMS, wms);
+        cv.put(InventoryAppContract.PositionEntry.COLUMN_DIFFERENCE, difference);
+        return mDb.update(InventoryAppContract.PositionEntry.TABLE_NAME_REGISTRATIONS, cv ,  "_id=?", new String[]{id});
+    }
+
+    private long addNewRegistration(String position, String item, int stock, int wms, int difference ) {
         ContentValues cv = new ContentValues();
         cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, position);
         cv.put(InventoryAppContract.PositionEntry.COLUMN_ITEM, item);
@@ -198,5 +232,19 @@ public class AddRegistrationActivity extends AppCompatActivity {
         cv.put(InventoryAppContract.PositionEntry.COLUMN_WMS, wms);
         cv.put(InventoryAppContract.PositionEntry.COLUMN_DIFFERENCE, difference);
         return mDb.insert(InventoryAppContract.PositionEntry.TABLE_NAME_REGISTRATIONS, null, cv);
+    }
+
+    private Cursor getRegistration(String id) {
+        String selection = "_id=?";
+        String[] selectionArgs = new String[]{id};
+        return mDb.query(
+                InventoryAppContract.PositionEntry.TABLE_NAME_REGISTRATIONS,
+                null,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                InventoryAppContract.PositionEntry.COLUMN_TIMESTAMP
+        );
     }
 }
