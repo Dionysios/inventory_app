@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,10 +26,13 @@ import android.widget.Toast;
 import com.example.dionpapas.inventoryapp.data.InventoryAppContract;
 import com.example.dionpapas.inventoryapp.data.InventoryDBHelper;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.channels.FileChannel;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     private static String LOG_TAG = "MainActivty";
     private SQLiteDatabase mDb;
     private PositionsListAdapter mAdapter;
+    Context mContext;
+    private static final String SHARED_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".myfileprovider";
+    private static final String SHARED_FOLDER = "shared";
 
    // PositionsListAdapter.ListItemClickListener listener;
 
@@ -43,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        mContext = getApplicationContext();
         RecyclerView waitlistRecyclerView;
 
         waitlistRecyclerView = (RecyclerView) this.findViewById(R.id.all_guests_list_view);
@@ -133,7 +140,11 @@ public class MainActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             default:
-                exportDB();
+                try {
+                    exportDB();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 return true;
                 //return super.onOptionsItemSelected(item);
         }
@@ -141,50 +152,141 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean fileExist(String fname){
         File file = getBaseContext().getFileStreamPath(fname);
+        Log.i(LOG_TAG,"this is the location file");
         return file.exists();
     }
 
 
+    private File createFile() throws IOException {
+        final File sharedFolder = new File(getFilesDir(), SHARED_FOLDER);
+        sharedFolder.mkdirs();
+        final File sharedFile = File.createTempFile("export", ".csv", sharedFolder);
+        sharedFile.createNewFile();
+        writeFile(sharedFile);
+        return sharedFile;
+    }
 
-    private void exportDB(){
-
-        String filename = "export.csv";
+    private void writeFile(File destination ) {
         FileOutputStream outputStream;
         String columnString =   "\"PersonName\",\"Gender\",\"Street1\",\"postOffice\",\"Age\"";
         String dataString   =   "\"" + "test1" +"\",\"" + "test2" + "\",\"" + "test3" + "\",\"" + "test4"+ "\",\"" + "test5" + "\"";
         String combinedString = columnString + "\n" + dataString;
 
-//        try {
-//            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-//            try {
-//                outputStream.write(combinedString.getBytes());
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            outputStream.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        boolean is_there = fileExist(filename);
-//        Log.d(LOG_TAG,"File verified" + is_there);
-
-        String root = Environment.getExternalStorageDirectory().toString();
-        File myDir = new File(root + "/");
-        Log.d(LOG_TAG,"this is the dir" + myDir.toString());
-        myDir.mkdirs();
-
-        File file = new File (myDir, filename);
-        if (file.exists ())
-            file.delete ();
         try {
-            FileOutputStream out = new FileOutputStream(file);
-            out.write(combinedString.getBytes());
-            out.flush();
-            out.close();
-
+            outputStream = openFileOutput(destination.getName(), Context.MODE_PRIVATE);
+            try {
+                outputStream.write(combinedString.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        boolean is_there = fileExist(destination.getName());
+        Log.d(LOG_TAG,"File verified" + is_there + " pth is" + destination.getAbsolutePath());
+
+
+    }
+
+    public void exportDB() throws IOException {
+        // Create a random image and save it in private app folder
+        File sharedFile = createFile();
+        Log.d(LOG_TAG,"shared file" + sharedFile);
+        // Get the shared file's Uri
+        Uri uri = FileProvider.getUriForFile(mContext, SHARED_PROVIDER_AUTHORITY, sharedFile);
+
+       // Uri path = FileProvider.getUriForFile(getApplicationContext(), "com.myfileprovider", new File(filename));
+        //Uri path = Uri.fromFile(fileLocation);
+        //  File file = getBaseContext().getFileStreamPath(fname);
+        //Uri fileUri = Uri.fromFile(new File(context.getCacheDir()+ "/"+ filename));
+        //Uri fileUri = Uri.fromFile(getBaseContext().getFileStreamPath(filename));
+        Log.d(LOG_TAG,"URI is" + uri);
+
+        FileInputStream in = null;
+        try {
+            in = openFileInput(sharedFile.getName());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        InputStreamReader inputStreamReader = new InputStreamReader(in);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        StringBuilder sb = new StringBuilder();
+        String line;
+        try {
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+                Log.d(LOG_TAG,"Reading file to see if it empty" + line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        emailIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        // set the type to 'email'
+        emailIntent .setType("vnd.android.cursor.dir/email");
+        String to[] = {"nionios250@gmail.com"};
+        emailIntent.setData(uri);
+
+
+        emailIntent .putExtra(Intent.EXTRA_EMAIL, to);
+        // the attachment
+        emailIntent .putExtra(Intent.EXTRA_STREAM, uri);
+        // the mail subject
+        emailIntent .putExtra(Intent.EXTRA_SUBJECT, "Subject");
+        startActivityForResult(Intent.createChooser(emailIntent , "Send email..."),1);
+//
+//        // Create a intent
+//        final ShareCompat.IntentBuilder intentBuilder = ShareCompat.IntentBuilder.from(this)
+//                .setType("image/*")
+//                .addStream(uri);
+//
+//        // Start the intent
+//        final Intent chooserIntent = intentBuilder.createChooserIntent();
+//        startActivity(chooserIntent);
+    }
+
+    private void exportDB1(){
+
+        String filename = "export.csv";
+        FileOutputStream outputStream1;
+        String columnString =   "\"PersonName\",\"Gender\",\"Street1\",\"postOffice\",\"Age\"";
+        String dataString   =   "\"" + "test1" +"\",\"" + "test2" + "\",\"" + "test3" + "\",\"" + "test4"+ "\",\"" + "test5" + "\"";
+        String combinedString = columnString + "\n" + dataString;
+
+        try {
+            outputStream1 = openFileOutput(filename, Context.MODE_PRIVATE);
+            try {
+                outputStream1.write(combinedString.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            outputStream1.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+//        String root = Environment.getExternalStorageDirectory().toString();
+//        File myDir = new File(root + "/");
+//        Log.d(LOG_TAG,"this is the dir" + myDir.toString());
+//        myDir.mkdirs();
+//
+//        File file = new File (myDir, filename);
+//        if (file.exists ())
+//            file.delete ();
+//        try {
+//            FileOutputStream out = new FileOutputStream(file);
+//            out.write(combinedString.getBytes());
+//            out.flush();
+//            out.close();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         send_email(filename);
 
@@ -224,14 +326,16 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        }
     }
-    
+
     public void send_email(String filename){
         File fileLocation = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), filename);
-        Uri path = Uri.fromFile(fileLocation);
+        //Uri path = Uri.parse("content://" + Environment.getExternalStorageDirectory().getAbsolutePath());
+        Uri path = FileProvider.getUriForFile(getApplicationContext(), "com.myfileprovider", new File(filename));
+        //Uri path = Uri.fromFile(fileLocation);
       //  File file = getBaseContext().getFileStreamPath(fname);
         //Uri fileUri = Uri.fromFile(new File(context.getCacheDir()+ "/"+ filename));
         //Uri fileUri = Uri.fromFile(getBaseContext().getFileStreamPath(filename));
-
+        Log.d(LOG_TAG,"URI is" + path);
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         // set the type to 'email'
         emailIntent .setType("vnd.android.cursor.dir/email");
