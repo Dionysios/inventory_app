@@ -1,9 +1,9 @@
-package com.example.dionpapas.inventoryapp.data;
+package com.dionpapas.inventoryapp.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.example.dionpapas.inventoryapp.data.InventoryAppContract.*;
+import com.dionpapas.inventoryapp.data.InventoryAppContract.*;
 
 
 /**

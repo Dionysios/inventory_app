@@ -1,4 +1,4 @@
-package com.example.dionpapas.inventoryapp.data;
+package com.dionpapas.inventoryapp.data;
 
 /**
  * Created by dionpa on 2017-11-03.

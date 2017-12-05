@@ -1,4 +1,4 @@
-package com.example.dionpapas.inventoryapp;
+package com.dionpapas.inventoryapp;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;

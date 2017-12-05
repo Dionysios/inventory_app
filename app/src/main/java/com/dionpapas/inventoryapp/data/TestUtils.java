@@ -1,4 +1,4 @@
-package com.example.dionpapas.inventoryapp.data;
+package com.dionpapas.inventoryapp.data;
 
 import android.content.ContentValues;
 import android.database.SQLException;

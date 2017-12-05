@@ -1,4 +1,4 @@
-package com.example.dionpapas.inventoryapp;
+package com.dionpapas.inventoryapp;
 
 import android.Manifest;
 import android.content.ContentValues;
@@ -18,14 +18,15 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.example.dionpapas.inventoryapp.data.InventoryAppContract;
-import com.example.dionpapas.inventoryapp.data.InventoryDBHelper;
+import com.dionpapas.inventoryapp.data.InventoryAppContract;
+import com.dionpapas.inventoryapp.data.InventoryDBHelper;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
 
 /**
- * Created by dionpa on 2017-11-13.
+ * Created by dionpa on 2017-12-05.
  */
+
 
 public class AddRegistrationActivity extends AppCompatActivity {
     private EditText mPositionName;
@@ -49,8 +50,8 @@ public class AddRegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add);
         //Get from here the activity was called
         Intent incomingIntent = getIntent();
-        if (incomingIntent.hasExtra("parameterUpdate") ){
-            isparameterUpdate  =  incomingIntent.getBooleanExtra("parameterUpdate", false);
+        if (incomingIntent.hasExtra("parameterUpdate")) {
+            isparameterUpdate = incomingIntent.getBooleanExtra("parameterUpdate", false);
             mid4update = incomingIntent.getIntExtra("registrationId", 0);
         }
         Log.d(LOG_TAG, "This is called with : " + isparameterUpdate);
@@ -88,7 +89,7 @@ public class AddRegistrationActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 try {
                     stock_final = Integer.parseInt(mStock.getText().toString());
-                }  catch (NumberFormatException ex) {
+                } catch (NumberFormatException ex) {
                     stock_final = 0;
                     Log.d(LOG_TAG, "Failed to parse party size text to number: " + ex.getMessage());
                 }
@@ -96,9 +97,11 @@ public class AddRegistrationActivity extends AppCompatActivity {
                 mDifference.setText(String.valueOf(difference_final));
             }
 
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
         });
 
         mWMS.addTextChangedListener(new TextWatcher() {
@@ -106,7 +109,7 @@ public class AddRegistrationActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 try {
                     mWMS_final = Integer.parseInt(mWMS.getText().toString());
-                }  catch (NumberFormatException ex) {
+                } catch (NumberFormatException ex) {
                     mWMS_final = 0;
                     Log.d(LOG_TAG, "Failed to parse party size text to number: " + ex.getMessage());
                 }
@@ -114,16 +117,18 @@ public class AddRegistrationActivity extends AppCompatActivity {
                 mDifference.setText(String.valueOf(difference_final));
             }
 
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
         });
 
         //if it is update append values
-        if(isparameterUpdate == true){
+        if (isparameterUpdate == true) {
             String id = String.valueOf(mid4update);
             Cursor mCursor = getRegistration(id);
-            if (mCursor.moveToFirst()){
+            if (mCursor.moveToFirst()) {
                 mPositionName.setText(mCursor.getString(mCursor.getColumnIndex(InventoryAppContract.PositionEntry.COLUMN_POSITION)));
                 mItemName.setText(mCursor.getString(mCursor.getColumnIndex(InventoryAppContract.PositionEntry.COLUMN_ITEM)));
                 mStock.setText(mCursor.getString(mCursor.getColumnIndex(InventoryAppContract.PositionEntry.COLUMN_STOCK)));
@@ -135,7 +140,7 @@ public class AddRegistrationActivity extends AppCompatActivity {
 
     }
 
-    public void launchActivity(Class<?> clss , String field) {
+    public void launchActivity(Class<?> clss, String field) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             mClss = clss;
@@ -143,7 +148,7 @@ public class AddRegistrationActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
         } else {
             Intent intent = new Intent(this, clss);
-            intent.putExtra("field",field);
+            intent.putExtra("field", field);
             startActivityForResult(intent, 0);
         }
     }
@@ -152,7 +157,7 @@ public class AddRegistrationActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
         Log.d(LOG_TAG, "OnActivity Resut");
-        if (requestCode == CommonStatusCodes.SUCCESS ) {
+        if (requestCode == CommonStatusCodes.SUCCESS) {
             // Make sure the request was successful
             String field = data.getStringExtra("field");
             Barcode barcode = data.getParcelableExtra("barcode");
@@ -163,12 +168,13 @@ public class AddRegistrationActivity extends AppCompatActivity {
             getIntent().removeExtra("field");
         }
     }
+
     @Override
-    public void onRequestPermissionsResult(int requestCode,  String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case CAMERA_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if(mClss != null) {
+                    if (mClss != null) {
                         Intent intent = new Intent(this, mClss);
                         startActivity(intent);
                     }
@@ -186,8 +192,8 @@ public class AddRegistrationActivity extends AppCompatActivity {
             return;
         }
 
-        if (isparameterUpdate == true){
-            long reply = updateRegistration( String.valueOf(mid4update), mPositionName.getText().toString(),mItemName.getText().toString(), stock_final, mWMS_final, difference_final);
+        if (isparameterUpdate == true) {
+            long reply = updateRegistration(String.valueOf(mid4update), mPositionName.getText().toString(), mItemName.getText().toString(), stock_final, mWMS_final, difference_final);
             if (reply != -1) {
                 Toast.makeText(getBaseContext(), "Registration has been updated", Toast.LENGTH_LONG).show();
                 isparameterUpdate = false;
@@ -195,7 +201,7 @@ public class AddRegistrationActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), "Registration can not be updated", Toast.LENGTH_LONG).show();
             }
         } else {
-            long reply = addNewRegistration(mPositionName.getText().toString(),mItemName.getText().toString(), stock_final, mWMS_final, difference_final);
+            long reply = addNewRegistration(mPositionName.getText().toString(), mItemName.getText().toString(), stock_final, mWMS_final, difference_final);
             if (reply != -1) {
                 Toast.makeText(getBaseContext(), "Registration has been created", Toast.LENGTH_LONG).show();
             } else {
@@ -205,7 +211,7 @@ public class AddRegistrationActivity extends AppCompatActivity {
         clearValues();
     }
 
-    public void clearValues(){
+    public void clearValues() {
         mPositionName.getText().clear();
         mItemName.getText().clear();
         mStock.getText().clear();
@@ -213,7 +219,7 @@ public class AddRegistrationActivity extends AppCompatActivity {
         mDifference.getText().clear();
     }
 
-    private long updateRegistration(String id,String position,String item, int stock, int wms, int difference ) {
+    private long updateRegistration(String id, String position, String item, int stock, int wms, int difference) {
         ContentValues cv = new ContentValues();
         cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, position);
         cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, position);
@@ -221,10 +227,10 @@ public class AddRegistrationActivity extends AppCompatActivity {
         cv.put(InventoryAppContract.PositionEntry.COLUMN_STOCK, stock);
         cv.put(InventoryAppContract.PositionEntry.COLUMN_WMS, wms);
         cv.put(InventoryAppContract.PositionEntry.COLUMN_DIFFERENCE, difference);
-        return mDb.update(InventoryAppContract.PositionEntry.TABLE_NAME_REGISTRATIONS, cv ,  "_id=?", new String[]{id});
+        return mDb.update(InventoryAppContract.PositionEntry.TABLE_NAME_REGISTRATIONS, cv, "_id=?", new String[]{id});
     }
 
-    private long addNewRegistration(String position, String item, int stock, int wms, int difference ) {
+    private long addNewRegistration(String position, String item, int stock, int wms, int difference) {
         ContentValues cv = new ContentValues();
         cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, position);
         cv.put(InventoryAppContract.PositionEntry.COLUMN_ITEM, item);
@@ -248,3 +254,4 @@ public class AddRegistrationActivity extends AppCompatActivity {
         );
     }
 }
+
