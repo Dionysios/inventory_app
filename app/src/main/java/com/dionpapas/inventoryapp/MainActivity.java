@@ -5,9 +5,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -15,19 +16,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.support.design.widget.FloatingActionButton;
+import android.widget.Toast;
 
 import com.dionpapas.inventoryapp.data.InventoryAppContract;
 import com.dionpapas.inventoryapp.data.InventoryDBHelper;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     Context mContext;
     private static final String SHARED_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".myfileprovider";
     private static final String SHARED_FOLDER = "shared";
+    private String to[] = {"nionios250@gmail.com"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +70,8 @@ public class MainActivity extends AppCompatActivity {
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 //get the id of the item being swiped
                 long id = (long) viewHolder.itemView.getTag();
-
                 //remove from DB
                 removePosition(id);
-
                 //update the list
                 mAdapter.swapCursor(getAllPositions());
             }
@@ -141,102 +138,79 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean fileExist(String fname){
-        File file = getBaseContext().getFileStreamPath(fname);
-        Log.i(LOG_TAG,"this is the location file");
-        return file.exists();
-    }
+//    public boolean fileExist(String fname){
+//        File file = getBaseContext().getFileStreamPath(fname);
+//        Log.i(LOG_TAG,"this is the location file");
+//        return file.exists();
+//    }
 
 
     public void exportDB() throws IOException {
-        String filename = "export.csv";
-        // Create a random image and save it in private app folder
-        File sharedFile = createFile();
-        Log.d(LOG_TAG,"shared file" + sharedFile);
-        send_email(sharedFile);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yyyy");
+        String currentDate = sdf.format(new Date());
+        String filename = "export_"+currentDate.toString() +".csv";
+        File shared = createFile(filename);
+        writeFile(shared);
     }
 
 
-    private File createFile() throws IOException {
+    private File createFile(String filename) throws IOException {
         final File sharedFolder = new File(getFilesDir(), SHARED_FOLDER);
         sharedFolder.mkdirs();
-       // final File sharedFile = File.createTempFile("export", ".csv", sharedFolder);
-        String filename="export.csv";
         File sharedFile = new File(getExternalFilesDir (SHARED_FOLDER), filename);
-        sharedFile.createNewFile();
-        writeFile(sharedFile);
+        if(!sharedFile.exists())
+            sharedFile.createNewFile();
         return sharedFile;
     }
 
     private void writeFile(File destination ) {
-//        FileOutputStream outputStream;
-//        String columnString =   "\"PersonName\",\"Gender\",\"Street1\",\"postOffice\",\"Age\"";
-//        String dataString   =   "\"" + "test1" +"\",\"" + "test2" + "\",\"" + "test3" + "\",\"" + "test4"+ "\",\"" + "test5" + "\""+
-//        "\"" + "test6" +"\",\"" + "test7" + "\",\"" + "test8" + "\",\"" + "test9"+ "\",\"" + "test10" + "\"";
-//        String combinedString = columnString + "\n" + dataString;
-//
-//        try {
-//            Log.d(LOG_TAG,"File location" + destination.getName());
+        String columnString =   "\"PersonName\",\"Gender\",\"Street1\",\"postOffice\",\"Age\"";
+        String dataString   =   "\"" + "test1" +"\",\"" + "test2" + "\",\"" + "test3" + "\",\"" + "test4"+ "\",\"" + "test5" + "\""+
+        "\"" + "test6" +"\",\"" + "test7" + "\",\"" + "test8" + "\",\"" + "test9"+ "\",\"" + "test10" + "\"";
+        String combinedString = columnString + "\n" + dataString;
+
+        try {
 //            outputStream = openFileOutput(destination.getName(), Context.MODE_PRIVATE);
-//            outputStream.write(combinedString.getBytes());
-//            outputStream.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        File file = new File(getExternalFilesDir(SHARED_FOLDER), destination.getName());
-
-        String filename = "myfile";
-        String string = "Hello world!";
-        FileOutputStream outputStream;
-
-        try {
-            outputStream = openFileOutput(destination.getName(), Context.MODE_PRIVATE);
-            outputStream.write(string.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void readFile(File sharedFile){
-        FileInputStream in = null;
-        try {
-            in = openFileInput(sharedFile.getName());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        InputStreamReader inputStreamReader = new InputStreamReader(in);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-        StringBuilder sb = new StringBuilder();
-        String line;
-        try {
-            while ((line = bufferedReader.readLine()) != null) {
-                sb.append(line);
-                Log.d(LOG_TAG,"Reading file to see if it empty" + line);
-            }
+            FileOutputStream fos = new FileOutputStream(destination);
+            fos.write(combinedString.getBytes());
+            fos.close();
+            Toast.makeText(getBaseContext(),"Data saved to file",Toast.LENGTH_SHORT).show();
+            send_email(destination);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+//    public void readFile(File sharedFile){
+//        FileInputStream in = null;
+//        try {
+//            in = openFileInput(sharedFile.getName());
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        InputStreamReader inputStreamReader = new InputStreamReader(in);
+//        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+//        StringBuilder sb = new StringBuilder();
+//        String line;
+//        try {
+//            while ((line = bufferedReader.readLine()) != null) {
+//                sb.append(line);
+//                Log.d(LOG_TAG,"Reading file to see if it empty" + line);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
     public void send_email(File file){
         Uri path = null;
         try {
             path = FileProvider.getUriForFile(mContext, SHARED_PROVIDER_AUTHORITY, file );
-            //boolean is_there = fileExist(file.getName());
-            //testing if file is empty
-            //readFile(file);
-            //Log.d(LOG_TAG,"File verified " + is_there + " pth is" + file.getAbsolutePath());
         } catch (IllegalArgumentException e) {
             Log.e("File Selector", "The selected file can't be shared: " + file.getName() + e);
         }
-        Log.d(LOG_TAG,"URI is" + path);
-
-        String to[] = {"nionios250@gmail.com"};
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        //shareIntent.setType("shared/*");
         shareIntent.setType("text/csv");
-        //path = Uri.parse("content://com.dionpapas.inventoryapp.myfileprovider/shared/test.csv");
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         shareIntent.putExtra(Intent.EXTRA_EMAIL, to);
         shareIntent.putExtra(Intent.EXTRA_STREAM, path);

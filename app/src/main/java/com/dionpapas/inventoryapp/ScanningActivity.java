@@ -50,7 +50,6 @@ public class ScanningActivity extends AppCompatActivity {
         }
 
         Bundle extras = getIntent().getExtras();
-        ;
 
         if (extras != null) {
             field = extras.getString("field");
