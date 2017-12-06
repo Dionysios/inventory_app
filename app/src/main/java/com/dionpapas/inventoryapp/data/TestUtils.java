@@ -19,37 +19,19 @@ public class TestUtils {
         //create a list of fake guests
         List<ContentValues> list = new ArrayList<ContentValues>();
 
-        ContentValues cv = new ContentValues();
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, "05361");
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_ITEM, "12358");
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_STOCK, 25);
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_WMS, 16);
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_DIFFERENCE, 9);
+        int limit = 201;
 
-        list.add(cv);
-
-        cv = new ContentValues();
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, "05361");
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_ITEM, "5354534534");
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_STOCK, 20);
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_WMS, 16);
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_DIFFERENCE, 4);
-        list.add(cv);
-
-//        cv = new ContentValues();
-//        cv.put(WaitlistContract.WaitlistEntry.COLUMN_GUEST_NAME, "Jessica");
-//        cv.put(WaitlistContract.WaitlistEntry.COLUMN_PARTY_SIZE, 99);
-//        list.add(cv);
-//
-//        cv = new ContentValues();
-//        cv.put(WaitlistContract.WaitlistEntry.COLUMN_GUEST_NAME, "Larry");
-//        cv.put(WaitlistContract.WaitlistEntry.COLUMN_PARTY_SIZE, 1);
-//        list.add(cv);
-//
-//        cv = new ContentValues();
-//        cv.put(WaitlistContract.WaitlistEntry.COLUMN_GUEST_NAME, "Kim");
-//        cv.put(WaitlistContract.WaitlistEntry.COLUMN_PARTY_SIZE, 45);
-//        list.add(cv);
+        for (int i=1 ; i<limit ; i++){
+            ContentValues cv = new ContentValues();
+            int value1 = 2;
+            int value2 = 1;
+            cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, "05361" + i);
+            cv.put(InventoryAppContract.PositionEntry.COLUMN_ITEM, "12358" + i);
+            cv.put(InventoryAppContract.PositionEntry.COLUMN_STOCK, value1 + i);
+            cv.put(InventoryAppContract.PositionEntry.COLUMN_WMS, value2 + i);
+            cv.put(InventoryAppContract.PositionEntry.COLUMN_DIFFERENCE, (value1 - value2) + i);
+            list.add(cv);
+        }
 
         //insert all guests in one transaction
         try

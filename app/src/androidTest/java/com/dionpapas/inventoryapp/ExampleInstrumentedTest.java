@@ -1,4 +1,4 @@
-package com.example.dionpapas.inventoryapp;
+package com.dionpapas.inventoryapp;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

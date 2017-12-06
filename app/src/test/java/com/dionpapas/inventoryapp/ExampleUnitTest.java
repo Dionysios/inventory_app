@@ -1,4 +1,4 @@
-package com.example.dionpapas.inventoryapp;
+package com.dionpapas.inventoryapp;
 
 import org.junit.Test;
 

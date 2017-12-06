@@ -20,12 +20,18 @@ import android.widget.Toast;
 
 import com.dionpapas.inventoryapp.data.InventoryAppContract;
 import com.dionpapas.inventoryapp.data.InventoryDBHelper;
+import com.dionpapas.inventoryapp.data.TestUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.dionpapas.inventoryapp.data.InventoryAppContract.PositionEntry.COLUMN_DIFFERENCE;
+import static com.dionpapas.inventoryapp.data.InventoryAppContract.PositionEntry.COLUMN_ITEM;
+import static com.dionpapas.inventoryapp.data.InventoryAppContract.PositionEntry.COLUMN_POSITION;
+import static com.dionpapas.inventoryapp.data.InventoryAppContract.PositionEntry.COLUMN_TIMESTAMP;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +41,9 @@ public class MainActivity extends AppCompatActivity {
     Context mContext;
     private static final String SHARED_PROVIDER_AUTHORITY = BuildConfig.APPLICATION_ID + ".myfileprovider";
     private static final String SHARED_FOLDER = "shared";
-    private String to[] = {"nionios250@gmail.com"};
+    private String to[] = {"theodoropoulosvas@gmail.com"};
+    private String emailBody= "Here comes the database export";
+    private String emailSubject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +59,10 @@ public class MainActivity extends AppCompatActivity {
         InventoryDBHelper dbHelper = new InventoryDBHelper(this);
 
         mDb = dbHelper.getWritableDatabase();
-
-        Cursor cursor = getAllPositions();
+        //Insert fake data
+        //TestUtils.insertFakeData(mDb);
+        //Get all data
+        Cursor cursor = getAllRegistrations();
         // Create an adapter for that cursor to display the data
         mAdapter = new PositionsListAdapter(this, cursor);
         // Link the adapter to the RecyclerView
@@ -73,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 //remove from DB
                 removePosition(id);
                 //update the list
-                mAdapter.swapCursor(getAllPositions());
+                mAdapter.swapCursor(getAllRegistrations());
             }
 
         }).attachToRecyclerView(waitlistRecyclerView);
@@ -96,12 +106,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // re-queries for all tasks
-        mAdapter.swapCursor(getAllPositions());
+        mAdapter.swapCursor(getAllRegistrations());
         //getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
     }
 
 
-    private Cursor getAllPositions() {
+    private Cursor getAllRegistrations() {
         return mDb.query(
                 InventoryAppContract.PositionEntry.TABLE_NAME_REGISTRATIONS,
                 null,
@@ -109,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 null,
                 null,
-                InventoryAppContract.PositionEntry.COLUMN_TIMESTAMP
+                COLUMN_TIMESTAMP
         );
     }
 
@@ -138,17 +148,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    public boolean fileExist(String fname){
-//        File file = getBaseContext().getFileStreamPath(fname);
-//        Log.i(LOG_TAG,"this is the location file");
-//        return file.exists();
-//    }
-
-
     public void exportDB() throws IOException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd_MM_yyyy");
         String currentDate = sdf.format(new Date());
         String filename = "export_"+currentDate.toString() +".csv";
+        emailSubject = "Database export on " + currentDate.toString();
         File shared = createFile(filename);
         writeFile(shared);
     }
@@ -160,19 +164,40 @@ public class MainActivity extends AppCompatActivity {
         File sharedFile = new File(getExternalFilesDir (SHARED_FOLDER), filename);
         if(!sharedFile.exists())
             sharedFile.createNewFile();
+            String columnString =   "\"Position\",\"Item\",\"Time\",\"Difference\"";
+            FileOutputStream fos = new FileOutputStream(sharedFile);
+            fos.write(columnString.getBytes());
+            fos.close();
         return sharedFile;
     }
 
     private void writeFile(File destination ) {
-        String columnString =   "\"PersonName\",\"Gender\",\"Street1\",\"postOffice\",\"Age\"";
-        String dataString   =   "\"" + "test1" +"\",\"" + "test2" + "\",\"" + "test3" + "\",\"" + "test4"+ "\",\"" + "test5" + "\""+
-        "\"" + "test6" +"\",\"" + "test7" + "\",\"" + "test8" + "\",\"" + "test9"+ "\",\"" + "test10" + "\"";
-        String combinedString = columnString + "\n" + dataString;
+ //       String columnString =   "\"Position\",\"Item\",\"Time\",\"Difference\"";
+//        String combinedString = columnString + "\n" + dataString;
+
+//        public static final String COLUMN_POSITION = "position_name";
+//        public static final String COLUMN_ITEM = "item";
+//        public static final String COLUMN_STOCK = "stock";
+//        public static final String COLUMN_WMS = "wms";
+//        public static final String COLUMN_DIFFERENCE= "difference";
+//        public static final String COLUMN_TIMESTAMP = "timestamp";
 
         try {
-//            outputStream = openFileOutput(destination.getName(), Context.MODE_PRIVATE);
             FileOutputStream fos = new FileOutputStream(destination);
-            fos.write(combinedString.getBytes());
+            Cursor cursor = getAllRegistrations();
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    String position = cursor.getString(cursor.getColumnIndex(COLUMN_POSITION)) + ",";
+                    String item = cursor.getString(cursor.getColumnIndex(COLUMN_ITEM)) + ",";
+                    String timestamp = cursor.getString(cursor.getColumnIndex(COLUMN_TIMESTAMP)) + ",";
+                    String difference = cursor.getString(cursor.getColumnIndex(COLUMN_DIFFERENCE))+ "\n";
+                    String combinedString = position + item + timestamp + difference;
+
+                    fos.write(combinedString.getBytes());
+                    cursor.moveToNext();
+                }
+            }
+//            outputStream = openFileOutput(destination.getName(), Context.MODE_PRIVATE);
             fos.close();
             Toast.makeText(getBaseContext(),"Data saved to file",Toast.LENGTH_SHORT).show();
             send_email(destination);
@@ -213,6 +238,8 @@ public class MainActivity extends AppCompatActivity {
         shareIntent.setType("text/csv");
         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         shareIntent.putExtra(Intent.EXTRA_EMAIL, to);
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, emailSubject);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
         shareIntent.putExtra(Intent.EXTRA_STREAM, path);
         mContext.startActivity(Intent.createChooser(shareIntent,"Send mail..."));
     }
