@@ -7,10 +7,57 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="320dp"
+        android:paddingLeft="10dp"
+        android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/position_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="40dp"
+            android:textSize="22dp"
+            android:textColor="@android:color/black"
+            android:text="@string/position_name_hint" />
+
+        <TextView
+            android:id="@+id/item_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="22dp"
+            android:textColor="@android:color/black"
+            android:text="@string/item_hint" />
+
+        <TextView
+            android:id="@+id/date_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="22dp"
+            android:textColor="@android:color/black"
+            android:contentDescription="@string/quantity_hint"
+            android:text="@string/date_hint" />
+
+        <TextView
+            android:id="@+id/difference_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/quantity_hint"
+            android:textAlignment="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="5dp"
+            android:text="@string/difference_hint_short"
+            android:textColor="@android:color/black"
+            android:textSize="22dp" />
+
+    </LinearLayout>
     <!-- RecyclerView that is responsible for holding a list of task data -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/all_guests_list_view"
+        android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="8dp"/>
@@ -36,38 +83,7 @@
     <!--android:padding="@dimen/activity_horizontal_margin"-->
     <!--tools:context="com.example.android.waitlist.MainActivity">-->
 
-    <!--&lt;!&ndash;<LinearLayout&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-        <!--&lt;!&ndash;android:layout_height="wrap_content">&ndash;&gt;-->
 
-        <!--&lt;!&ndash;<EditText&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/position_edit_text"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
-
-            <!--&lt;!&ndash;android:hint="@string/position_name_hint"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:inputType="textPersonName|textCapWords"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:textAppearance="@style/TextAppearance.AppCompat.Headline" />&ndash;&gt;-->
-
-        <!--&lt;!&ndash;<EditText&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/item_edit_text"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:inputType="textPersonName|textCapWords"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:textAppearance="@style/TextAppearance.AppCompat.Headline" />&ndash;&gt;-->
-        <!--&lt;!&ndash;<EditText&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/quantity_edit_text"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="40dp"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:contentDescription="@string/quantity_hint"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:inputType="number"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:maxLength="2"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:textAppearance="@style/TextAppearance.AppCompat.Headline" />&ndash;&gt;-->
-
-    <!--&lt;!&ndash;</LinearLayout>&ndash;&gt;-->
 
 
     <!--&lt;!&ndash;<Button&ndash;&gt;-->

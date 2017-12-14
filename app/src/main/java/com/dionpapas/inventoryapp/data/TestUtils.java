@@ -19,7 +19,7 @@ public class TestUtils {
         //create a list of fake guests
         List<ContentValues> list = new ArrayList<ContentValues>();
 
-        int limit = 201;
+        int limit = 11;
 
         for (int i=1 ; i<limit ; i++){
             ContentValues cv = new ContentValues();

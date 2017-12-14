@@ -1,10 +1,11 @@
 <resources>
-    <string name="app_name">Inventory App</string>
+    <string name="app_name">Inventory</string>
     <string name="position_name_hint">Position</string>
     <string name="item_hint">Item</string>
     <string name="stock_hint">Stock</string>
     <string name="wms_hint">WMS</string>
     <string name="difference_hint">Difference</string>
+    <string name="difference_hint_short">Diff</string>
     <string name="date_hint">Date</string>
     <string name="quantity_hint">How many items on the item</string>
     <string name="add_button_text">Save</string>
