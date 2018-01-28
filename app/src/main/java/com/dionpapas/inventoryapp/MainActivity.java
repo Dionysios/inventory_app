@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
         mFileExists = sharedFile.exists();
         if(!mFileExists) {
             sharedFile.createNewFile();
-            String columnString = "\"Position\",\"Item\",\"Stock\",\"WMS\",\"Difference\",\"Stock\"" + "\n";
+            String columnString = "\"Position\",\"Item\",\"Stock\",\"WMS\",\"Difference\",\"Date\"" + "\n";
             FileOutputStream fos = new FileOutputStream(sharedFile);
             fos.write(columnString.getBytes());
             fos.close();

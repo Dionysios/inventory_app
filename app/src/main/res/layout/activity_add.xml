@@ -62,8 +62,8 @@
                 android:id="@+id/input_item"
                 android:layout_width="221dp"
                 android:layout_height="wrap_content"
-                android:hint="@string/item_hint"
-                android:inputType="textEmailAddress" />
+                android:inputType="number"
+                android:hint="@string/item_hint"/>
         </android.support.design.widget.TextInputLayout>
     </RelativeLayout>
 

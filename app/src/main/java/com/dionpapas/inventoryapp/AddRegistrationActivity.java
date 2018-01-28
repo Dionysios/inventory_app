@@ -222,7 +222,7 @@ public class AddRegistrationActivity extends AppCompatActivity {
     private long updateRegistration(String id, String position, String item, int stock, int wms, int difference) {
         ContentValues cv = new ContentValues();
         cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, position);
-        cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, position);
+//        cv.put(InventoryAppContract.PositionEntry.COLUMN_POSITION, position);
         cv.put(InventoryAppContract.PositionEntry.COLUMN_ITEM, item);
         cv.put(InventoryAppContract.PositionEntry.COLUMN_STOCK, stock);
         cv.put(InventoryAppContract.PositionEntry.COLUMN_WMS, wms);
