@@ -148,10 +148,17 @@ public class MainActivity extends AppCompatActivity {
     private boolean removePosition(long id) {
         return mDb.delete(InventoryAppContract.PositionEntry.TABLE_NAME_REGISTRATIONS, InventoryAppContract.PositionEntry._ID + "=" + id, null) > 0;
     }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_share);
         return true;
     }
 
@@ -193,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
             fos.write(columnString.getBytes());
             fos.close();
             Log.d(LOG_TAG, "Creating file with colums");
+
         } else {
             Log.d(LOG_TAG, "File already exists");
         }
